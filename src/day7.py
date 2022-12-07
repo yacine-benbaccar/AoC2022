@@ -6,6 +6,7 @@ with open("../input/day7.input") as f:
 total_disk_space = 70000000
 update_space = 30000000
 
+
 class Type(Enum):
     DIR = 'dir'
     FILE = 'file'
@@ -22,17 +23,8 @@ class Node:
     def __str__(self):
         return f"- {self.name} ({self.type}, size={self.size})"
 
-    def has_children(self):
-        return len(self.children) > 0
-
     def has_size_under_threshold(self, threshold):
         return self.size <= threshold
-
-    def has_dirs(self):
-        for c in self.children:
-            if c.type == Type.DIR:
-                return True
-        return False
 
 
 def is_command(line):
@@ -45,10 +37,6 @@ def get_command_type(line):
         return "ls", None
     else:
         return "cd", l[2]
-
-
-def create_graph(lines):
-    pass
 
 
 def get_node(line: str, parent: Node) -> Node:
@@ -110,7 +98,7 @@ def solution(root: Node, disk_space_to_clean):
             for c in root.children:
                 _part1_solution(c)
 
-    def _part2_solution(root: Node, space_needed = disk_space_to_clean):
+    def _part2_solution(root: Node, space_needed=disk_space_to_clean):
         nonlocal candidate_for_deletion
         if root.type == Type.DIR:
             if root.size >= space_needed: candidate_for_deletion.append(root)
@@ -120,9 +108,10 @@ def solution(root: Node, disk_space_to_clean):
     _part1_solution(root)
     _part2_solution(root)
 
-    n = min(candidate_for_deletion, key = lambda n: n.size)
+    n = min(candidate_for_deletion, key=lambda n: n.size)
 
     return acc, n
+
 
 root = create_graph(lines)
 compute_dir_size(root)
